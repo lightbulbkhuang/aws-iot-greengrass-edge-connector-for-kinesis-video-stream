@@ -67,12 +67,15 @@ public class RecordingController {
                 VideoRecorderBuilder builder = getVideoRecorderBuilder();
                 PipedOutputStream outputStream = new PipedOutputStream();
                 builder.addCameraSource(CameraType.RTSP, edgeConnectorForKVSConfiguration.getRtspStreamURL());
-                builder.registerFileSink(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                builder.registerFileSink(
+                        edgeConnectorForKVSConfiguration.getLocalCaptureCapability(),
+                        ContainerType.MATROSKA,
                         edgeConnectorForKVSConfiguration.getVideoRecordFolderPath().toString()
                                 + PATH_DELIMITER + VIDEO_FILENAME_PREFIX_WITH_OUT_UNDERLINE);
                 builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO,
                         ContainerType.MATROSKA, new GStreamerAppDataCallback());
-                builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO,
+                builder.registerAppDataOutputStream(
+                        edgeConnectorForKVSConfiguration.getLiveStreamingCapability(),
                         ContainerType.MATROSKA, outputStream);
                 videoRecorder = builder.construct();
                 edgeConnectorForKVSConfiguration.setVideoRecorder(videoRecorder);

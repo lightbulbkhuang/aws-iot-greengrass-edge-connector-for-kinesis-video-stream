@@ -70,6 +70,8 @@ public final class Constants {
     public static final String SITE_WISE_VIDEO_UPLOADED_TIME_RANGE_MEASUREMENT_NAME = "VideoUploadedTimeRange";
     public static final String SITE_WISE_VIDEO_RECORDED_TIME_RANGE_MEASUREMENT_NAME = "VideoRecordedTimeRange";
     public static final String SITE_WISE_CACHED_VIDEO_AGE_OUT_ON_EDGE_MEASUREMENT_NAME = "CachedVideoAgeOutOnEdge";
+    public static final String SITE_WISE_LOCAL_CAPTURE_VIDEO_AUDIO_CAPABILITY_NAME = "LocalCaptureVideoAudioCapability";
+    public static final String SITE_WISE_LIVE_STREAMING_VIDEO_AUDIO_CAPABILITY_NAME = "LiveStreamingVideoAudioCapability";
     public static final String SECRETS_MANAGER_SECRET_KEY = "RTSPStreamURL";
     public static final String MQTT_LIVE_VIDEO_UPLOAD_REQUEST_KEY = "live";
     public static final String LIVE_STREAMING_STOP_TIMER_PREFIX = "StopLiveTimer";

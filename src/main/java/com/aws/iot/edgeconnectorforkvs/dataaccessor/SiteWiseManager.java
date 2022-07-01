@@ -20,6 +20,7 @@ import com.aws.iot.edgeconnectorforkvs.model.EdgeConnectorForKVSConfiguration;
 import com.aws.iot.edgeconnectorforkvs.model.exceptions.EdgeConnectorForKVSException;
 import com.aws.iot.edgeconnectorforkvs.model.exceptions.EdgeConnectorForKVSUnrecoverableException;
 import com.aws.iot.edgeconnectorforkvs.util.Constants;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +93,9 @@ public class SiteWiseManager {
         DescribeAssetResponse assetResponse = siteWiseClient.describeAsset(cameraSiteWiseAssetId);
         EdgeConnectorForKVSConfiguration edgeConnectorForKVSConfiguration = new EdgeConnectorForKVSConfiguration();
         edgeConnectorForKVSConfiguration.setSiteWiseAssetId(cameraSiteWiseAssetId);
+        // Set default config for local/live streaming capability
+        edgeConnectorForKVSConfiguration.setLocalCaptureCapability(RecorderCapability.VIDEO_AUDIO);
+        edgeConnectorForKVSConfiguration.setLiveStreamingCapability(RecorderCapability.VIDEO_AUDIO);
 
         for (AssetProperty assetProperty : assetResponse.assetProperties()) {
             GetAssetPropertyValueResponse result;
@@ -130,6 +134,35 @@ public class SiteWiseManager {
                 } else {
                     log.warn("Video Upload Request MQTT Notification Disabled for Asset Id " + cameraSiteWiseAssetId);
                 }
+            }
+
+            try {
+                // Overwrite local streaming capability
+                if (assetProperty.name().equalsIgnoreCase(
+                        Constants.SITE_WISE_LOCAL_CAPTURE_VIDEO_AUDIO_CAPABILITY_NAME)) {
+                    result = siteWiseClient.getAssetPropertyValue(cameraSiteWiseAssetId,
+                            assetProperty.id());
+                    if (result != null && result.propertyValue() != null) {
+                        edgeConnectorForKVSConfiguration
+                                .setLocalCaptureCapability(RecorderCapability
+                                        .valueOf(result.propertyValue().value().stringValue()));
+                    }
+                }
+                // Overwrite live streaming capability
+                if (assetProperty.name().equalsIgnoreCase(
+                        Constants.SITE_WISE_LIVE_STREAMING_VIDEO_AUDIO_CAPABILITY_NAME)) {
+                    result = siteWiseClient.getAssetPropertyValue(cameraSiteWiseAssetId,
+                            assetProperty.id());
+                    if (result != null && result.propertyValue() != null) {
+                        edgeConnectorForKVSConfiguration
+                                .setLiveStreamingCapability(RecorderCapability
+                                        .valueOf(result.propertyValue().value().stringValue()));
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                log.error(
+                        "Invalid SiteWise asset property: {}. The local/live streaming capability must be one of [AUDIO_ONLY, VIDEO_ONLY, VIDEO_AUDIO].",
+                        assetProperty.id());
             }
         }
         return edgeConnectorForKVSConfiguration;

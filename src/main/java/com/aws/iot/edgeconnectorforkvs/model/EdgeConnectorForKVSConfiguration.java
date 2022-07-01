@@ -18,10 +18,12 @@ package com.aws.iot.edgeconnectorforkvs.model;
 
 import com.aws.iot.edgeconnectorforkvs.dataaccessor.StreamManager;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.VideoRecorder;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderStatus;
 import com.aws.iot.edgeconnectorforkvs.videouploader.VideoUploader;
 import com.aws.iot.edgeconnectorforkvs.videouploader.VideoUploaderClient;
 import com.aws.iot.edgeconnectorforkvs.videouploader.model.UploaderStatus;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Synchronized;
@@ -66,6 +68,10 @@ public class EdgeConnectorForKVSConfiguration {
     public StreamManager streamManager;
     public ScheduledFuture<?> stopLiveStreamingTaskFuture;
     public AtomicBoolean fatalStatus;
+    @Builder.Default
+    public RecorderCapability localCaptureCapability = RecorderCapability.VIDEO_AUDIO;
+    @Builder.Default
+    public RecorderCapability liveStreamingCapability = RecorderCapability.VIDEO_AUDIO;
     // Thread lock for recorder and uploader thread
     public ReentrantLock processLock;
 
