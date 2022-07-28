@@ -283,14 +283,12 @@
             <property name="tokens" value="${checkstyle.missingjavadoctype.tokens}" default="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF"/>
         </module>
         <module name="JavadocMethod">
-            <property name="severity" value="${checkstyle.javadocmethod.severity}" default="warning"/>
-            <property name="scope" value="${checkstyle.javadocmethod.scope}" default="public"/>
-            <property name="excludeScope" value="${checkstyle.javadocmethod.excludescope}" default="private"/>
-            <property name="allowedAnnotations" value="${checkstyle.javadocmethod.allowannotations}" default="Override"/>
+            <property name="accessModifiers" value="${checkstyle.javadocmethod.accessModifiers}" default="public"/>
+            <property name="allowedAnnotations" value="${checkstyle.javadocmethod.allowannotations}" default="Override, Test"/>
             <property name="validateThrows" value="${checkstyle.javadocmethod.validatethrows}" default="false"/>
             <property name="allowMissingParamTags" value="${checkstyle.javadocmethod.allowmissingparamtags}" default="true"/>
             <property name="allowMissingReturnTag" value="${checkstyle.javadocmethod.allowmissingreturntag}" default="true"/>
-            <property name="tokens" value="${checkstyle.javadocmethod.tokens}" default="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF"/>
+            <property name="tokens" value="${checkstyle.javadocmethod.tokens}" default="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
         </module>
         <module name="MissingJavadocMethod">
             <property name="severity" value="${checkstyle.missingjavadocmethod.severity}" default="warning"/>

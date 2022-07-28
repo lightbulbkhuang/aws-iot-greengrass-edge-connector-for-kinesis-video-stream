@@ -20,7 +20,7 @@ plugins {
 
   // SpotBugs for static analysis to look for bugs in Java code. Read more at:
   // https://plugins.gradle.org/plugin/com.github.spotbugs
-  id "com.github.spotbugs" version "5.0.6"
+  id "com.github.spotbugs" version "5.0.9"
 
   // Gradle Shadow creating fat/uber JARs with support for package relocation. Read more at:
   // https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
@@ -71,6 +71,7 @@ spotbugs {
 }
 
 spotbugsTest {
+  excludeFilter = file("config/spotbugs/exclude_test.xml")
   ignoreFailures = false
 }
 
@@ -160,42 +161,42 @@ repositories {
 
 dependencies {
   // Lombok
-  implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+  testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
   // AWS Greengrass Stream Manager
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.3'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
-  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.12.3'
-  implementation group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.3'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.3'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
+  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.13.3'
+  implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   // Compile
   implementation group: 'com.amazonaws', name: 'amazon-kinesis-video-streams-parser-library', version: '1.2.4'
-  implementation group: 'com.amazonaws', name: 'aws-java-sdk-greengrassv2', version: '1.12.186'
-  implementation group: 'net.java.dev.jna', name: 'jna', version: '5.11.0'
-  implementation group: 'net.java.dev.jna', name: 'jna-platform', version: '5.11.0'
+  implementation group: 'com.amazonaws', name: 'aws-java-sdk-greengrassv2', version: '1.12.278'
+  implementation group: 'net.java.dev.jna', name: 'jna', version: '5.12.1'
+  implementation group: 'net.java.dev.jna', name: 'jna-platform', version: '5.12.1'
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-  implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
-  implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'
+  implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.18.0'
+  implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.18.0'
   implementation group: 'org.freedesktop.gstreamer', name: 'gst1-java-core', version: '1.4.0'
   implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
   implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
-  implementation group: 'software.amazon.awssdk', name: 'greengrassv2', version: '2.17.157'
-  implementation group: 'software.amazon.awssdk', name: 'iotsitewise', version: '2.17.157'
-  implementation group: 'software.amazon.awssdk', name: 'secretsmanager', version: '2.17.157'
-  implementation group: 'software.amazon.awssdk.crt', name: 'aws-crt', version: '0.16.0'
-  implementation group: 'software.amazon.awssdk.iotdevicesdk', name: 'aws-iot-device-sdk', version: '1.7.1'
+  implementation group: 'software.amazon.awssdk', name: 'greengrassv2', version: '2.17.249'
+  implementation group: 'software.amazon.awssdk', name: 'iotsitewise', version: '2.17.249'
+  implementation group: 'software.amazon.awssdk', name: 'secretsmanager', version: '2.17.249'
+  implementation group: 'software.amazon.awssdk.crt', name: 'aws-crt', version: '0.18.2'
+  implementation group: 'software.amazon.awssdk.iotdevicesdk', name: 'aws-iot-device-sdk', version: '1.10.0'
 
   // Test
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'
-  testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
-  testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
-  testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.4.0'
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.0'
+  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.0'
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.6.1'
+  testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.6.1'
+  testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.6.1'
   testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
   testImplementation group: 'uk.org.webcompere', name: 'system-stubs-jupiter', version: '2.0.1'
 }
