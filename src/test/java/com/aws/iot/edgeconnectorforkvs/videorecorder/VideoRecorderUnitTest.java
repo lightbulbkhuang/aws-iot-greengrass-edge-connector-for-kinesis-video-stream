@@ -1,17 +1,15 @@
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.aws.iot.edgeconnectorforkvs.videorecorder;
@@ -152,7 +150,8 @@ public class VideoRecorderUnitTest {
         VideoRecorderBuilder builder = new VideoRecorderBuilder(mockGst, STATE_CALLBACK);
 
         Assertions.assertTrue(() -> builder.addCameraSource(REC_TYPE, SRC_URL));
-        Assertions.assertTrue(builder.registerFileSink(CON_TYPE, "./record"));
+        Assertions.assertTrue(
+                builder.registerFileSink(RecorderCapability.VIDEO_AUDIO, CON_TYPE, "./record"));
 
         // Set valid source and stored property should succeed
         VideoRecorder recorder = builder.construct();
@@ -177,8 +176,8 @@ public class VideoRecorderUnitTest {
         Assertions.assertThrows(RejectedExecutionException.class, () -> builder.construct());
 
         // Set property to invalid target should return false
-        Assertions.assertTrue(
-                builder.registerAppDataCallback(ContainerType.MATROSKA, (rec, bBuff) -> {
+        Assertions.assertTrue(builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO,
+                ContainerType.MATROSKA, (rec, bBuff) -> {
                 }));
         VideoRecorder recorder = builder.construct();
         Assertions.assertFalse(recorder.setFilePathProperty(INVALID_ELEMENT_PROPERTY, 0));
@@ -191,8 +190,8 @@ public class VideoRecorderUnitTest {
         Pipeline pipe = builder.getPipeline();
         Assertions.assertNotNull(builder.getPipeline());
         RecorderCameraRtsp cameraSrc = new RecorderCameraRtsp(dao, pipe, SRC_URL);
-        RecorderBranchFile filePath =
-                new RecorderBranchFile(ContainerType.MATROSKA, dao, pipe, "./record");
+        RecorderBranchFile filePath = new RecorderBranchFile(RecorderCapability.VIDEO_AUDIO,
+                ContainerType.MATROSKA, dao, pipe, "./record");
 
         // Add cam
         Assertions.assertTrue(builder.registerCustomCamera(cameraSrc));
@@ -212,10 +211,15 @@ public class VideoRecorderUnitTest {
 
         Assertions.assertTrue(() -> builder.addCameraSource(REC_TYPE, SRC_URL));
 
+        // register filesink with null capability should retrieve exceptions
+        Assertions.assertThrows(NullPointerException.class, () -> builder
+                .registerFileSink(null, CON_TYPE, "./record"));
         // add file sink should succeed
-        Assertions.assertTrue(builder.registerFileSink(CON_TYPE, "./record"));
+        Assertions.assertTrue(
+                builder.registerFileSink(RecorderCapability.VIDEO_AUDIO, CON_TYPE, "./record"));
         // add file sink again should be failed
-        Assertions.assertFalse(builder.registerFileSink(CON_TYPE, "./record"));
+        Assertions.assertFalse(
+                builder.registerFileSink(RecorderCapability.VIDEO_AUDIO, CON_TYPE, "./record"));
     }
 
     @Test
@@ -230,7 +234,7 @@ public class VideoRecorderUnitTest {
         }
 
         builder.addCameraSource(REC_TYPE, SRC_URL);
-        builder.registerFileSink(CON_TYPE, "./record");
+        builder.registerFileSink(RecorderCapability.VIDEO_AUDIO, CON_TYPE, "./record");
         recorder = builder.construct();
 
         // enable/disable invalid pipeline branches should get FALSE
@@ -247,16 +251,21 @@ public class VideoRecorderUnitTest {
         VideoRecorderBuilder builder = new VideoRecorderBuilder(mockGst, STATE_CALLBACK);
 
         builder.addCameraSource(REC_TYPE, SRC_URL);
+        // Register sink with null capability should retrieve exceptions
+        Assertions.assertThrows(NullPointerException.class, () -> builder
+                .registerAppDataCallback(null, ContainerType.MATROSKA, (rec, bBuff) -> {
+                }));
         // Register null callback should retrieve exceptions
         Assertions.assertThrows(NullPointerException.class,
-                () -> builder.registerAppDataCallback(ContainerType.MATROSKA, null));
+                () -> builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO,
+                        ContainerType.MATROSKA, null));
         // Register a new callback should succeed
-        Assertions.assertTrue(
-                builder.registerAppDataCallback(ContainerType.MATROSKA, (rec, bBuff) -> {
+        Assertions.assertTrue(builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO,
+                ContainerType.MATROSKA, (rec, bBuff) -> {
                 }));
         // Register a new callback again should be failed
-        Assertions.assertFalse(
-                builder.registerAppDataCallback(ContainerType.MATROSKA, (rec, bBuff) -> {
+        Assertions.assertFalse(builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO,
+                ContainerType.MATROSKA, (rec, bBuff) -> {
                 }));
     }
 
@@ -266,8 +275,9 @@ public class VideoRecorderUnitTest {
 
         builder.addCameraSource(REC_TYPE, SRC_URL);
         // register app callback
-        builder.registerAppDataCallback(ContainerType.MATROSKA, (rec, bBuff) -> {
-        });
+        builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                (rec, bBuff) -> {
+                });
 
         VideoRecorder recorder = builder.construct();
 
@@ -322,12 +332,13 @@ public class VideoRecorderUnitTest {
 
         builder.registerCustomCamera(mockCamera);
         // register app callback
-        builder.registerAppDataCallback(ContainerType.MATROSKA, (rec, bBuff) -> {
-            // app callback should be invoked in newSample listener
-            byte[] data = new byte[bBuff.remaining()];
-            bBuff.get(data);
-            Assertions.assertTrue(Arrays.equals(testArray, data));
-        });
+        builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                (rec, bBuff) -> {
+                    // app callback should be invoked in newSample listener
+                    byte[] data = new byte[bBuff.remaining()];
+                    bBuff.get(data);
+                    Assertions.assertTrue(Arrays.equals(testArray, data));
+                });
         recorder = builder.construct();
         recordThread = new Thread(new RunnableRecorder(recorder));
 
@@ -370,15 +381,19 @@ public class VideoRecorderUnitTest {
         }
 
         builder.addCameraSource(REC_TYPE, SRC_URL);
+        // Register sink with null capability should retrieve exceptions
+        Assertions.assertThrows(NullPointerException.class, () -> builder
+                .registerAppDataOutputStream(null, ContainerType.MATROSKA, testOutputStream));
         // Register null OutputStream should retrieve exceptions
         Assertions.assertThrows(NullPointerException.class,
-                () -> builder.registerAppDataOutputStream(ContainerType.MATROSKA, null));
+                () -> builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO,
+                        ContainerType.MATROSKA, null));
         // Register a new OutputStream should succeed
-        Assertions.assertTrue(
-                builder.registerAppDataOutputStream(ContainerType.MATROSKA, testOutputStream));
+        Assertions.assertTrue(builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO,
+                ContainerType.MATROSKA, testOutputStream));
         // Register a new OutputStream again should be failed
-        Assertions.assertFalse(
-                builder.registerAppDataOutputStream(ContainerType.MATROSKA, testOutputStream));
+        Assertions.assertFalse(builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO,
+                ContainerType.MATROSKA, testOutputStream));
     }
 
     @Test
@@ -393,7 +408,8 @@ public class VideoRecorderUnitTest {
         VideoRecorderBuilder builder = new VideoRecorderBuilder(mockGst, STATE_CALLBACK);
         builder.addCameraSource(REC_TYPE, SRC_URL);
         // register app OutputStream
-        builder.registerAppDataOutputStream(ContainerType.MATROSKA, testOutputStream);
+        builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                testOutputStream);
 
         VideoRecorder recorder = builder.construct();
 
@@ -448,7 +464,8 @@ public class VideoRecorderUnitTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         testOutputStream = baos;
         builder.registerCustomCamera(mockCamera);
-        builder.registerAppDataOutputStream(ContainerType.MATROSKA, testOutputStream);
+        builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                testOutputStream);
 
         recorder = builder.construct();
         recordThread = new Thread(new RunnableRecorder(recorder));
@@ -523,7 +540,8 @@ public class VideoRecorderUnitTest {
         PipedOutputStream pipedOutputStream = new PipedOutputStream();
         testOutputStream = pipedOutputStream;
         builder.registerCustomCamera(mockCamera);
-        builder.registerAppDataOutputStream(ContainerType.MATROSKA, testOutputStream);
+        builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                testOutputStream);
 
         recorder = builder.construct();
         recordThread = new Thread(new RunnableRecorder(recorder));
@@ -574,13 +592,14 @@ public class VideoRecorderUnitTest {
         VideoRecorder recorder;
 
         builder.registerCustomCamera(mockCamera);
-        builder.registerAppDataCallback(ContainerType.MATROSKA, (rec, bBuff) -> {
-        });
+        builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
+                (rec, bBuff) -> {
+                });
         recorder = builder.construct();
 
-        RecorderBranchFileMonitor branchFile =
-                recorder.new RecorderBranchFileMonitor(ContainerType.MATROSKA, this.mockGst,
-                        this.mockGstPipeline, "./recorder", "monitorFile");
+        RecorderBranchFileMonitor branchFile = recorder.new RecorderBranchFileMonitor(
+                RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA, this.mockGst,
+                this.mockGstPipeline, "./recorder", "monitorFile");
 
         branchFile.onBindBegin();
         branchFile.onBindEnd();
@@ -589,8 +608,9 @@ public class VideoRecorderUnitTest {
         branchFile.getMonitorCheck().check(mockMonitor, "monitorFile", null);
         branchFile.onUnbindBegin();
 
-        RecorderBranchAppMonitor branchApp = recorder.new RecorderBranchAppMonitor(
-                ContainerType.MATROSKA, this.mockGst, this.mockGstPipeline, "monitorApp");
+        RecorderBranchAppMonitor branchApp =
+                recorder.new RecorderBranchAppMonitor(RecorderCapability.VIDEO_AUDIO,
+                        ContainerType.MATROSKA, this.mockGst, this.mockGstPipeline, "monitorApp");
 
         branchApp.onBindBegin();
         branchApp.onBindEnd();

@@ -1,17 +1,15 @@
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.aws.iot.edgeconnectorforkvs.videorecorder;
@@ -24,6 +22,7 @@ import com.aws.iot.edgeconnectorforkvs.videorecorder.callback.AppDataCallback;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.callback.StatusCallback;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.CameraType;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.ContainerType;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.util.GstDao;
 import org.freedesktop.gstreamer.Pipeline;
 import lombok.NonNull;
@@ -111,7 +110,8 @@ public class VideoRecorderBuilder {
      * @param autoBind set the branch to be bound automatically
      * @return true if success
      */
-    public boolean registerCustomBranch(RecorderBranchBase branch, String branchName, boolean autoBind) {
+    public boolean registerCustomBranch(RecorderBranchBase branch, String branchName,
+            boolean autoBind) {
         boolean canRegister = this.recorder.addBranch(branch, branchName, autoBind);
 
         this.hasCustomBranch |= canRegister;
@@ -122,17 +122,18 @@ public class VideoRecorderBuilder {
     /**
      * Setup File path and container type for storing.
      *
+     * @param cap branch capability
      * @param containerType Container type that will be used to store media data
      * @param recorderFilePath File path where RTSP media data will be stored. It does not contain
      *        file name extension because recorder will append extension automatically.
      * @return True if splitmuxsink is added
      */
-    public boolean registerFileSink(ContainerType containerType, String recorderFilePath)
-            throws IllegalArgumentException {
+    public boolean registerFileSink(@NonNull RecorderCapability cap, ContainerType containerType,
+            String recorderFilePath) throws IllegalArgumentException {
         boolean canRegister = false;
 
         if (!this.hasFileBranch) {
-            canRegister = this.recorder.registerFileSink(containerType, recorderFilePath);
+            canRegister = this.recorder.registerFileSink(cap, containerType, recorderFilePath);
             this.hasFileBranch |= canRegister;
         }
 
@@ -142,16 +143,17 @@ public class VideoRecorderBuilder {
     /**
      * Register callback for receiving streaming data.
      *
+     * @param cap branch capability
      * @param type Container type that will be used for media streaming
      * @param notifier A callback is used to receive data of new streaming samples
      * @return True if notifier is registered successfully.
      */
-    public boolean registerAppDataCallback(ContainerType type, @NonNull AppDataCallback notifier)
-            throws IllegalArgumentException {
+    public boolean registerAppDataCallback(@NonNull RecorderCapability cap, ContainerType type,
+            @NonNull AppDataCallback notifier) throws IllegalArgumentException {
         boolean canRegister = false;
 
         if (!this.hasCallbackBranch) {
-            canRegister = this.recorder.registerAppDataCallback(type, notifier);
+            canRegister = this.recorder.registerAppDataCallback(cap, type, notifier);
             this.hasCallbackBranch |= canRegister;
         }
 
@@ -161,16 +163,17 @@ public class VideoRecorderBuilder {
     /**
      * Register OutputStream for receiving streaming data.
      *
+     * @param cap branch capability
      * @param type Container type that will be used for media streaming
      * @param outputStream A OutputStream is used to receive data of new streaming samples
      * @return True if notifier is registered successfully.
      */
-    public boolean registerAppDataOutputStream(ContainerType type,
+    public boolean registerAppDataOutputStream(@NonNull RecorderCapability cap, ContainerType type,
             @NonNull OutputStream outputStream) throws IllegalArgumentException {
         boolean canRegister = false;
 
         if (!this.hasStreamBranch) {
-            canRegister = this.recorder.registerAppDataOutputStream(type, outputStream);
+            canRegister = this.recorder.registerAppDataOutputStream(cap, type, outputStream);
             this.hasStreamBranch |= canRegister;
         }
 

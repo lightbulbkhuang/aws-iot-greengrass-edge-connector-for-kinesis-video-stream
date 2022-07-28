@@ -16,8 +16,6 @@
 
 package com.aws.iot.edgeconnectorforkvs.videorecorder.util;
 
-import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
-
 /**
  * Recorder configurations.
  */
@@ -56,15 +54,6 @@ public final class Config {
      * Recorder pipeline app output stream branch names.
      */
     public static final String OSTREAM_PATH = "branchOutputStreamPath";
-
-    /**
-     * Default recorder file branch capability.
-     */
-    public static final RecorderCapability FILE_PATH_CAPABILITY = RecorderCapability.VIDEO_AUDIO;
-    /**
-     * Default recorder app branch capability.
-     */
-    public static final RecorderCapability APP_PATH_CAPABILITY = RecorderCapability.VIDEO_AUDIO;
 
     /**
      * Default file branch monitor period in milliiseconds.

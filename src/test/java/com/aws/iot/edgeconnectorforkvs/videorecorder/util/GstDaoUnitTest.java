@@ -188,7 +188,7 @@ public class GstDaoUnitTest {
         willReturn(true).given(mockVersion).checkSatisfies(any(Version.class));
         Assertions.assertEquals(mockVersion, mockGst.getSatisfyVersion(mockVersion, mockVersion));
         willReturn(false).given(mockVersion).checkSatisfies(any(Version.class));
-        Assertions.assertThrows(RuntimeException.class, () -> mockGst.getSatisfyVersion(mockVersion, mockVersion));
+        Assertions.assertThrows(UnsatisfiedLinkError.class, () -> mockGst.getSatisfyVersion(mockVersion, mockVersion));
 
         Assertions.assertDoesNotThrow(() -> mockGst.initContext());
 

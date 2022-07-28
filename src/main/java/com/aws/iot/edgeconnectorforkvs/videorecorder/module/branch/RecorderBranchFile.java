@@ -1,17 +1,15 @@
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.aws.iot.edgeconnectorforkvs.videorecorder.module.branch;
@@ -26,6 +24,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.base.RecorderBranchBase;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.ContainerType;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.util.Config;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.util.GstDao;
 import com.sun.jna.Pointer;
@@ -80,13 +79,15 @@ public class RecorderBranchFile extends RecorderBranchBase {
     /**
      * RecorderBranchFile constructor.
      *
+     * @param cap branch capability
      * @param type multimedia container type
      * @param dao GStreamer data access object
      * @param pipeline GStreamer pipeline
      * @param filePath stored file prefix
      */
-    public RecorderBranchFile(ContainerType type, GstDao dao, Pipeline pipeline, String filePath) {
-        super(Config.FILE_PATH_CAPABILITY, dao, pipeline);
+    public RecorderBranchFile(RecorderCapability cap, ContainerType type, GstDao dao,
+            Pipeline pipeline, String filePath) {
+        super(cap, dao, pipeline);
         this.gstCore = this.getGstCore();
         this.pipeline = this.getPipeline();
         this.filePath = filePath;
@@ -204,7 +205,8 @@ public class RecorderBranchFile extends RecorderBranchBase {
         boolean isEos = false;
 
         try {
-            isEos = this.deattachCnt.await(RecorderBranchFile.UNBIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            isEos = this.deattachCnt.await(RecorderBranchFile.UNBIND_TIMEOUT_MS,
+                    TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             log.error("deattachCnt InterruptedException: {}", e.getMessage());
         }

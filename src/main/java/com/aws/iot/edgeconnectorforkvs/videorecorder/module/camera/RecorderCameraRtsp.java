@@ -34,6 +34,7 @@ import org.freedesktop.gstreamer.SDPMessage;
 import org.freedesktop.gstreamer.Structure;
 import org.freedesktop.gstreamer.lowlevel.GPointer;
 import org.freedesktop.gstreamer.lowlevel.GstAPI.GstCallback;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -72,7 +73,7 @@ public class RecorderCameraRtsp extends RecorderCameraBase {
      * @param pipeline GStreamer pipeline
      * @param sourceUrl RTSP source address
      */
-    public RecorderCameraRtsp(GstDao dao, Pipeline pipeline, String sourceUrl) {
+    public RecorderCameraRtsp(GstDao dao, Pipeline pipeline, @NonNull String sourceUrl) {
         super(dao, pipeline);
         this.gstCore = this.getGstCore();
         this.pipeline = this.getPipeline();

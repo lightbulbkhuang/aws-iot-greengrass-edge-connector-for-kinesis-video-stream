@@ -1,17 +1,15 @@
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.aws.iot.edgeconnectorforkvs.videorecorder.module.branch;
@@ -22,7 +20,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.base.RecorderBranchBase;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.ContainerType;
-import com.aws.iot.edgeconnectorforkvs.videorecorder.util.Config;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.util.GstDao;
 import org.freedesktop.gstreamer.Element;
 import org.freedesktop.gstreamer.FlowReturn;
@@ -69,12 +67,14 @@ public class RecorderBranchApp extends RecorderBranchBase {
     /**
      * RecorderBranchApp constructor.
      *
+     * @param cap branch capability
      * @param type multimedia container type
      * @param dao GStreamer data access object
      * @param pipeline GStreamer pipeline
      */
-    public RecorderBranchApp(ContainerType type, GstDao dao, Pipeline pipeline) {
-        super(Config.APP_PATH_CAPABILITY, dao, pipeline);
+    public RecorderBranchApp(RecorderCapability cap, ContainerType type, GstDao dao,
+            Pipeline pipeline) {
+        super(cap, dao, pipeline);
         this.gstCore = this.getGstCore();
         this.pipeline = this.getPipeline();
 

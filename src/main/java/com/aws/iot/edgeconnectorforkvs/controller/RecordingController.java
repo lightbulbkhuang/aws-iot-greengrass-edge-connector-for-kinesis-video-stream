@@ -33,6 +33,7 @@ import com.aws.iot.edgeconnectorforkvs.videorecorder.callback.StatusCallback;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.callback.StatusCallbackImpl;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.CameraType;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.ContainerType;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderStatus;
 import lombok.NonNull;
 import lombok.Setter;
@@ -66,11 +67,13 @@ public class RecordingController {
                 VideoRecorderBuilder builder = getVideoRecorderBuilder();
                 PipedOutputStream outputStream = new PipedOutputStream();
                 builder.addCameraSource(CameraType.RTSP, edgeConnectorForKVSConfiguration.getRtspStreamURL());
-                builder.registerFileSink(ContainerType.MATROSKA,
+                builder.registerFileSink(RecorderCapability.VIDEO_AUDIO, ContainerType.MATROSKA,
                         edgeConnectorForKVSConfiguration.getVideoRecordFolderPath().toString()
                                 + PATH_DELIMITER + VIDEO_FILENAME_PREFIX_WITH_OUT_UNDERLINE);
-                builder.registerAppDataCallback(ContainerType.MATROSKA, new GStreamerAppDataCallback());
-                builder.registerAppDataOutputStream(ContainerType.MATROSKA, outputStream);
+                builder.registerAppDataCallback(RecorderCapability.VIDEO_AUDIO,
+                        ContainerType.MATROSKA, new GStreamerAppDataCallback());
+                builder.registerAppDataOutputStream(RecorderCapability.VIDEO_AUDIO,
+                        ContainerType.MATROSKA, outputStream);
                 videoRecorder = builder.construct();
                 edgeConnectorForKVSConfiguration.setVideoRecorder(videoRecorder);
                 edgeConnectorForKVSConfiguration.setOutputStream(outputStream);

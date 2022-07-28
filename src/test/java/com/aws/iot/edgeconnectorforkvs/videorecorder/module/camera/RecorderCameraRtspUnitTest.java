@@ -94,6 +94,9 @@ public class RecorderCameraRtspUnitTest {
         willThrow(new IllegalArgumentException()).given(this.mockGst).setElement(any(),
                 eq("invalid_property"), any());
 
+        Assertions.assertThrows(NullPointerException.class,
+                () -> new RecorderCameraRtsp(this.mockGst, this.mockPipeline, null));
+
         RecorderCameraRtsp camera =
                 new RecorderCameraRtsp(this.mockGst, this.mockPipeline, RTSP_URL);
 

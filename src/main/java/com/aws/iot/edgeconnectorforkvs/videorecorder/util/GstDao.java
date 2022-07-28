@@ -530,12 +530,12 @@ public class GstDao {
         return Gst.getVersion();
     }
 
-    Version getSatisfyVersion(Version requested, Version local) throws RuntimeException {
+    Version getSatisfyVersion(Version requested, Version local) throws UnsatisfiedLinkError {
         if (!local.checkSatisfies(requested)) {
             String msg = "The minimum required version of GStreamer is not satisfied. " + String
                     .format("Minimum required : %s, Current available : %s", requested, local);
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new UnsatisfiedLinkError(msg);
         }
 
         return requested;

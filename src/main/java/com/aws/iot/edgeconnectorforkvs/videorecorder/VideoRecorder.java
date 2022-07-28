@@ -1,17 +1,15 @@
 /*
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.aws.iot.edgeconnectorforkvs.videorecorder;
@@ -26,6 +24,7 @@ import com.aws.iot.edgeconnectorforkvs.videorecorder.callback.AppDataCallback;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.callback.StatusCallback;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.CameraType;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.model.ContainerType;
+import com.aws.iot.edgeconnectorforkvs.videorecorder.model.RecorderCapability;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.module.branch.RecorderBranchApp;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.module.branch.RecorderBranchFile;
 import com.aws.iot.edgeconnectorforkvs.videorecorder.module.camera.RecorderCameraRtsp;
@@ -48,8 +47,9 @@ public class VideoRecorder extends VideoRecorderBase {
         private AtomicInteger appCallbackDataCntOld;
         private AtomicInteger appCallbackDataCntNew;
 
-        RecorderBranchAppMonitor(ContainerType type, GstDao dao, Pipeline pipeline, String subj) {
-            super(type, dao, pipeline);
+        RecorderBranchAppMonitor(RecorderCapability cap, ContainerType type, GstDao dao,
+                Pipeline pipeline, String subj) {
+            super(cap, type, dao, pipeline);
             this.monitorSubject = subj;
             this.appCallbackDataCntNew = new AtomicInteger();
             this.appCallbackDataCntOld = new AtomicInteger();
@@ -101,9 +101,9 @@ public class VideoRecorder extends VideoRecorderBase {
         private String filePathOld;
         private String filePathNew;
 
-        RecorderBranchFileMonitor(ContainerType type, GstDao dao, Pipeline pipeline,
-                String filePath, String subj) {
-            super(type, dao, pipeline, filePath);
+        RecorderBranchFileMonitor(RecorderCapability cap, ContainerType type, GstDao dao,
+                Pipeline pipeline, String filePath, String subj) {
+            super(cap, type, dao, pipeline, filePath);
 
             this.monitorSubject = subj;
             this.filePathOld = null;
@@ -270,9 +270,9 @@ public class VideoRecorder extends VideoRecorderBase {
         return result;
     }
 
-    boolean registerFileSink(ContainerType containerType, String recorderFilePath)
-            throws IllegalArgumentException {
-        this.fileBranch = new RecorderBranchFileMonitor(containerType, this.getGstCore(),
+    boolean registerFileSink(RecorderCapability cap, ContainerType containerType,
+            String recorderFilePath) throws IllegalArgumentException {
+        this.fileBranch = new RecorderBranchFileMonitor(cap, containerType, this.getGstCore(),
                 this.getPipeline(), recorderFilePath, this.recorderName + "_" + Config.FILE_PATH);
 
         return this.addBranch(this.fileBranch, Config.FILE_PATH, true);
@@ -299,9 +299,9 @@ public class VideoRecorder extends VideoRecorderBase {
     }
 
     @Synchronized("appCallbackBranchLock")
-    boolean registerAppDataCallback(ContainerType type, AppDataCallback notifier)
-            throws IllegalArgumentException {
-        this.callbackBranch = new RecorderBranchAppMonitor(type, this.getGstCore(),
+    boolean registerAppDataCallback(RecorderCapability cap, ContainerType type,
+            AppDataCallback notifier) throws IllegalArgumentException {
+        this.callbackBranch = new RecorderBranchAppMonitor(cap, type, this.getGstCore(),
                 this.getPipeline(), this.recorderName + "_" + Config.CALLBACK_PATH);
         this.appCallback = notifier;
 
@@ -314,9 +314,9 @@ public class VideoRecorder extends VideoRecorderBase {
     }
 
     @Synchronized("appOStreamBranchLock")
-    boolean registerAppDataOutputStream(ContainerType type, OutputStream outputStream)
-            throws IllegalArgumentException {
-        this.streamBranch = new RecorderBranchAppMonitor(type, this.getGstCore(),
+    boolean registerAppDataOutputStream(RecorderCapability cap, ContainerType type,
+            OutputStream outputStream) throws IllegalArgumentException {
+        this.streamBranch = new RecorderBranchAppMonitor(cap, type, this.getGstCore(),
                 this.getPipeline(), this.recorderName + "_" + Config.OSTREAM_PATH);
         this.appOutputStream = outputStream;
 
